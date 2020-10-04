@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yidong.dao.CategoryDaoInf">
+
+
+    <insert id="insertCatefory1" parameterType="yidong.vo.admin.Category" >
+		insert into t_category(cid,cname,idpid,descs,status) values(t_category_seq.nextval,#{cname},null,#{descs},1)
+	</insert>
+
+	<update id="updateCatefory1" parameterType="yidong.vo.admin.Category" >
+		update t_category set cname=#{cname},descs=#{descs} where cid=#{cid}
+	</update>
+
+	<delete id="deleteCatefory1" parameterType="yidong.vo.admin.Category">
+		delete from t_category  where cid=#{cid}
+	</delete>
+
+	<select id="getCategory1list"  resultType="yidong.vo.admin.Category">
+		select * from t_category where status=1 and idpid is null
+	</select>
+
+	<select id="getcategory1" parameterType="yidong.vo.admin.Category" resultType="yidong.vo.admin.Category">
+		select * from t_category where cid=#{cid}
+	</select>
+
+	<insert id="insertCatefory2" parameterType="yidong.vo.admin.Category" >
+		insert into t_category(cid,cname,idpid,descs,status) values(t_category_seq.nextval,#{cname},#{idpid},#{descs},1)
+	</insert>
+
+
+	<update id="updateCatefory2" parameterType="yidong.vo.admin.Category" >
+		update t_category set cname=#{cname},idpid=#{idpid},descs=#{descs} where cid=#{cid}
+	</update>
+
+
+	<delete id="deleteCatefory2" parameterType="yidong.vo.admin.Category" >
+		delete from t_category  where cid=#{cid}
+	</delete>
+
+
+	<select id="getCategory2list"  resultType="yidong.vo.admin.Category">
+		select * from t_category where status=1 and idpid is not null
+	</select>
+
+
+	<select id="getCategory2" parameterType="yidong.vo.admin.Category" resultType="yidong.vo.admin.Category">
+		select * from t_category where cid=#{cid}
+	</select>
+
+	<select id="getCategory2list2" parameterType="yidong.vo.admin.Category" resultType="yidong.vo.admin.Category">
+		select * from t_category where status=1 and idpid=#{cid}
+	</select>
+</mapper>

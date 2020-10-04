@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yidong.dao.BookDaoInf">
+    <resultMap type="yidong.vo.admin.Book" id="BMap">
+        <result property="image_B" column="IMAGE_B" jdbcType="BLOB"/>
+        <result property="image_W" column="IMAGE_W" jdbcType="BLOB"/>
+    </resultMap>
+
+	<insert id="insertBook" parameterType="yidong.vo.admin.Book">
+	INSERT INTO t_book
+	(bid, bname,author,price,currprice,discount,press,edition,pagenum,wordnum,printtime,booksize,paper,cid,image_w,image_b,publishtime,status)
+	 VALUES
+	 (t_book_seq.NEXTVAL,#{bname},#{author},#{price},#{currprice},#{discount},#{press},#{edition},#{pagenum},#{wordnum},${printtime},#{booksize},#{paper},#{cid},#{image_w},#{image_b},#{publishtime},1)
+</insert>
+
+	<select id="gjselectAllCount" parameterType="yidong.vo.admin.Book" resultType="Integer">
+		SELECT count(*) FROM t_book
+		<where>
+			AND status = 1
+			<if test="bname!=null">AND bname like '%${bname}%' </if>
+			<if test="author!=null">AND author like '%${author}%'</if>
+			<if test="press!=null"> AND press like '%${press}%'</if>
+
+		</where>
+
+	</select>
+
+	<select id="gjselectBook"  resultType="yidong.vo.admin.Book">
+
+
+		select * from
+		(
+		select rownum num ,a.* from
+		(
+		select *
+		from t_book
+		<where>
+			AND status = 1
+			<if test="book.bname!=null">AND bname like '%${book.bname}%' </if>
+			<if test="book.author!=null">AND author like '%${book.author}%'</if>
+			<if test="book.press!=null"> AND press like '%${book.press}%'</if>
+
+		</where>
+		)a
+		)b
+		where b.num between #{pp.iStart} and #{pp.iEnd}
+
+	</select>
+	<select id="selectOneBook" parameterType="yidong.vo.admin.Book" resultType="yidong.vo.admin.Book">
+	select * from t_book where status=1 and bid=#{bid}
+   </select>
+
+	<select id="getBookImg" parameterType="yidong.vo.admin.Book" resultMap="BMap">
+	select * from t_book where status=1 and bid=#{bid}
+    </select>
+
+	<update id="updateBook" parameterType="yidong.vo.admin.Book">
+	update t_book set
+	 bname=#{bid},currprice=#{currprice},price=#{price},discount=#{discount},author=#{author},press=#{press},publishtime=#{publishtime},edition=#{edition},pagenum=#{pagenum},wordnum=#{wordnum},printtime=#{printtime},booksize=#{booksize},paper=#{paper},cid=#{cid}
+	where bid=1
+    </update>
+
+	<delete id="deleteBook" parameterType="yidong.vo.admin.Book">
+	delete from t_book  where bid=#{bid}
+    </delete>
+	<select id="selectAllCount" parameterType="yidong.vo.admin.Book" resultType="Integer">
+	select count(*) from t_book where status=1 and cid=#{cid}
+</select>
+</mapper>

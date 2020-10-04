@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yidong.dao.OrderDaoInf">
+    <resultMap type="yidong.vo.Order" id="myorder" >
+        <id property="oid" column="OID" jdbcType="VARCHAR"/>
+        <result property="ordertime" column="ORDERTIME" jdbcType="TIMESTAMP"/>
+        <result property="total" column="TOTAL" jdbcType="DOUBLE"/>
+        <result property="status" column="STATUS" jdbcType="INTEGER"/>
+        <result property="address" column="ADDRESS" jdbcType="VARCHAR"/>
+        <result property="userid" column="USERID" jdbcType="INTEGER"/>
+
+    </resultMap>
+<insert id="insertOrder" parameterType="yidong.vo.Order">
+    insert into t_order
+    (oid,ordertime,total,status,address,userid)
+    values
+    (t_order_seq.nextval,#{ordertime},#{total},#{status},#{address},#{userid})
+</insert>
+
+<insert id="insetOrderItem" parameterType="yidong.vo.user.OrderItem">
+insert  into t_orderitem
+(orderitemid,quantity,subtotal,bid,bname,currprice,image_B,oid)
+values
+(t_orderitem_seq.nextval,#{quantity},#{subtotal},#{bid},#{bname},#{currprice},#{image_B},#{oid})
+</insert>
+
+<select id="selectMyOrderAllCount" parameterType="yidong.vo.user.User" resultType="INTEGER">
+select count (*) from t_order where userid=#{userid}
+</select>
+
+    <select id="selectOrderItems" parameterType="yidong.vo.Order" resultType="yidong.vo.user.OrderItem">
+		select *
+		from t_orderitem
+		where  oid =#{oid}
+</select>
+    <select id="selectOneOrder" parameterType="yidong.vo.Order" resultType="yidong.vo.Order">
+	select *
+	from   t_order
+	where  oid=#{oid}
+</select>
+    <select id="selectAllStatusCount" parameterType="yidong.vo.Order" resultType="INTEGER">
+        select COUNT(*)
+        from  t_order
+        <choose>
+            <when test="status==0">
+            </when>
+            <otherwise>
+                where  status = #{status}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectMyOrder"  resultMap="myorder">
+
+	 <![CDATA[
+		 select * from
+      (
+         select rownum num ,a.* from
+           (
+             	SELECT *
+				FROM   t_order
+				WHERE  userid = #{user.userid}
+            )a
+       )b
+       where b.num >= #{pp.iStart} and  b.num < #{pp.iEnd}
+       ]]>
+</select>
+
+    <select id="selectAllStatusOrder" resultType="yidong.vo.Order">
+        <![CDATA[
+		 select * from
+      (
+         select rownum num ,a.* from
+           (]]>
+        SELECT *
+        FROM   t_order
+        <choose>
+            <when test="order.status==0">
+            </when>
+            <otherwise>
+                WHERE  status = #{order.status}
+            </otherwise>
+        </choose>
+        <![CDATA[
+            )a
+       )b
+       where b.num >= #{pp.iStart} and  b.num < #{pp.iEnd}
+       ]]>
+    </select>
+
+    <update id="deleteOrder" parameterType="yidong.vo.Order">
+update t_order
+set   status = 5
+where  oid =#{oid}
+</update>
+
+    <update id="updatePayOrder" parameterType="yidong.vo.Order">
+	update  t_order
+	set    status = 2
+	where  oid =#{oid}
+</update>
+
+    <update id="updateFaHuo" parameterType="yidong.vo.Order">
+	update t_order
+	set    status = 3
+	where  oid =#{oid}
+</update>
+
+    <update id="updateShouHuo" parameterType="yidong.vo.Order">
+	update t_order
+	set    status = 4
+	where  oid =#{oid}
+</update>
+
+</mapper>
